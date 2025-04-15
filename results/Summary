@@ -1,0 +1,79 @@
+Infrastructure Scaling in Video Streaming Platforms Using AI-Based Forecasting
+🚀 Objective
+To develop an intelligent infrastructure auto-scaling strategy for video streaming platforms by:
+
+Forecasting daily video viewership.
+
+Simulating resource allocation based on predicted demand.
+
+Minimizing costs while avoiding underprovisioning or overprovisioning.
+
+🧠 Phase 1: Time Series Forecasting Models
+Models Implemented:
+Model	Type	RMSE (↓)	MAE (↓)	MAPE (%) (↓)
+ARIMA	Statistical	High	High	Very High
+Prophet	Statistical	Moderate	High	High
+LSTM (Univariate) ✅	Neural Network	🟢 Best	🟢 Best	🟢 Best
+Transformer	Neural Network	Moderate	Moderate	High
+Multivariate LSTM	Neural Network	Slightly High	Slightly High	Moderate
+Multivariate Transformer	Neural Network	Slightly High	Moderate	Moderate
+Feature-Augmented LSTM	Hybrid DL + Stats	Moderate	Moderate	High
+Feature-Augmented Transformer	Hybrid DL + Stats	Moderate	Moderate	Very High
+CNN-LSTM	Custom DL Hybrid	Good	Good	🔵 Low MAPE
+Hybrid Ensemble (avg)	Ensemble	Poor	Poor	❌ Worst
+✅ Final Chosen Model: LSTM (Univariate)
+Reason: Best RMSE, MAE, and acceptable MAPE — highly interpretable and easy to scale.
+
+⚙️ Phase 2: Auto-Scaling Simulation Framework
+Features Implemented:
+🔄 Forecast-Guided Resource Allocation
+
+⚠️ Alert System for Over/Under-Provisioning
+
+🧾 Alert Logging (CSV)
+
+📉 Economic Evaluation (Unit Cost, SLA Penalties, Overprovision Wastage)
+
+💵 Profit Estimation based on actual views
+
+💰 Economic Simulation Metrics
+Metric	Description
+Unit Cost	Cost of provisioning one server unit ($1000/day)
+Unit Capacity	One unit supports 50M views/day
+Underprovision Penalty	$1500 per missed unit (SLA breach)
+Wastage Cost	$400 per unused unit
+Profit Calculation	(actual_views * revenue_per_view) - total_cost
+🟩 Profit / 🟥 Loss for each day is visualized and stored as a cost breakdown table with color-coded insights.
+
+📈 Alert & Trigger Logic
+Rules:
+⚠️ Scale-Up Alert: When actual > allocated → SLA risk
+
+📉 Scale-Down Opportunity: When actual < 50% of allocated → resource waste
+
+Outputs:
+Console Alerts
+
+Logged alerts in autoscaling_buffered_alerts.csv
+
+Visualization with annotations
+
+📋 Final Deliverables
+✅ Model Evaluation Charts (RMSE, MAE, MAPE)
+
+✅ Forecast Graphs per Model
+
+✅ Auto-scaling Simulation Graphs & Tables
+
+✅ Cost Analysis Table with Profit/Loss Visualized
+
+✅ Forecast + Alert Log CSVs
+
+📦 Future Scope
+Real-time deployment using Flask/FastAPI for inference
+
+Integration with Kubernetes for real auto-scaling
+
+Dynamic cost optimizations based on traffic tier/pricing models
+
+Incorporation of latency metrics in cost-performance evaluation

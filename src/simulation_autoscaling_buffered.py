@@ -17,7 +17,7 @@ buffer_units = 0.5              # Max buffer: 0.5 extra units
 max_scaling_cap = 1_000_000_000 # Optional max cap
 
 allocated = []
-alerts = []
+alert_log = []
 
 for idx, v in enumerate(views):
     required_units = int((v + unit_capacity - 1) // unit_capacity)
@@ -27,17 +27,35 @@ for idx, v in enumerate(views):
 
     # Alert logic
     act = actual_views[idx]
+    date = df['date'].iloc[idx].date()
+
     if act > allocated_capacity:
-        alerts.append(f"{df['date'].iloc[idx].date()} ⚠️ Scale-Up Needed: Actual={act:.0f}, Allocated={allocated_capacity:.0f}")
+        msg = "⚠️ Scale-Up Needed"
+        alert_log.append({
+            "date": date,
+            "event": msg,
+            "actual_views": int(act),
+            "allocated_capacity": int(allocated_capacity)
+        })
     elif act < 0.5 * allocated_capacity:
-        alerts.append(f"{df['date'].iloc[idx].date()} 📉 Scale-Down Opportunity: Actual={act:.0f}, Allocated={allocated_capacity:.0f}")
+        msg = "📉 Scale-Down Opportunity"
+        alert_log.append({
+            "date": date,
+            "event": msg,
+            "actual_views": int(act),
+            "allocated_capacity": int(allocated_capacity)
+        })
 
-# Log alerts
+# 🔔 Log alerts
 print("🔔 Alerts:")
-for a in alerts:
-    print(a)
+for row in alert_log:
+    print(f"{row['date']} {row['event']}: Actual={row['actual_views']}, Allocated={row['allocated_capacity']}")
 
-# Save with new allocated column
+# Save alerts to CSV
+alert_df = pd.DataFrame(alert_log)
+alert_df.to_csv("results/autoscaling_events_log.csv", index=False)
+
+# Save allocated capacity with original forecast
 df["allocated_capacity"] = allocated
 df.to_csv("results/autoscaling_buffered_alerts.csv", index=False)
 
@@ -48,7 +66,7 @@ plt.plot(df["date"], df["predicted_views"], label="Forecasted Views", color="ora
 plt.plot(df["date"], df["allocated_capacity"], label="Allocated Resources (buffered)", linestyle="--", color="darkorange")
 plt.axhline(100_000_000, color="red", linestyle=":", label="Scale-Up Threshold (100M)")
 plt.axhline(60_000_000, color="green", linestyle=":", label="Scale-Down Threshold (60M)")
-plt.title("📊 Auto-Scaling with 0.5-Unit Buffer and Alerting")
+plt.title("📊 Auto-Scaling with 0.5-Unit Buffer and Alert Logging")
 plt.xlabel("Date")
 plt.ylabel("Views / Capacity")
 plt.legend()
