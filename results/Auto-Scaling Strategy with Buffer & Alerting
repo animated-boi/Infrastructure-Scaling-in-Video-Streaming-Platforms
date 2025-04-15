@@ -1,0 +1,40 @@
+## 🚀 Auto-Scaling Strategy with Forecast-Guided Buffer and Alerting
+
+### Overview
+This strategy simulates how infrastructure scaling can adapt to fluctuating video demand based on forecasted traffic. It uses LSTM_Univariate forecasts and introduces:
+
+- 🔄 Dynamic resource allocation based on predicted views.
+- ➕ A buffer of 0.5 units beyond forecasted requirements to handle minor spikes.
+- 🚨 An alerting system to notify when resources are under- or over-provisioned.
+
+---
+
+### 🧮 Logic
+
+- **Unit Capacity**: 1 unit supports 50 million views.
+- **Buffer**: +0.5 unit added beyond required units.
+- **Max Cap**: Optional ceiling of 1B views allocated.
+
+---
+
+### ⚠️ Alerts
+
+- If actual_views > allocated_capacity → “Scale-Up Needed”
+- If actual_views < 50% of allocated_capacity → “Scale-Down Opportunity”
+
+---
+
+### 📈 Visualization
+
+The output plot includes:
+- Actual views (blue)
+- Forecasted views (orange)
+- Allocated resource capacity (dashed line)
+- Thresholds for scale-up and scale-down
+
+This gives an intuitive view of how closely resources track demand.
+
+---
+
+Simulating a sudden spike & dip scenario and visualizing the alert system in action
+![alt text](../figures/Figure_SuddenSpikeAndDipAlerts.png)
